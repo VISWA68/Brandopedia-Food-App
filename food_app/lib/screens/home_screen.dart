@@ -62,10 +62,54 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: const [
-              Icon(Icons.fastfood, color: Color(0xFF4e29ac)),
-              Icon(Icons.local_drink, color: Color(0xFF4e29ac)),
-              Icon(Icons.local_offer, color: Color(0xFF4e29ac)),
-              Icon(Icons.favorite, color: Color(0xFF4e29ac)),
+              Column(
+                children: [
+                  Icon(Icons.fastfood, color: Color(0xFF4e29ac)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Food",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Icon(Icons.local_drink, color: Color(0xFF4e29ac)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Beverages",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Icon(Icons.local_offer, color: Color(0xFF4e29ac)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Offers",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Icon(Icons.favorite, color: Color(0xFF4e29ac)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Favourites",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 20),
