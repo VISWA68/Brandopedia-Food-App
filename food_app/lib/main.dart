@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/providers/cart_provider.dart';
-import 'package:food_app/screens/home_screen.dart';
+import 'package:food_app/screens/main_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -20,13 +20,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Mini Food App',
       theme: ThemeData(
+        fontFamily: 'Roboto',
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4e29ac)),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const MainScreen(),
     );
   }
 }
-
