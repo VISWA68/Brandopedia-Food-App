@@ -32,7 +32,7 @@ class CartScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'Cart Empty :(',
+                    'Cart is Empty :(',
                     style: TextStyle(
                       fontSize: 35,
                       fontWeight: FontWeight.w600,
