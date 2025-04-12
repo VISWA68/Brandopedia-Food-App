@@ -45,7 +45,7 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     return Scaffold(
-      backgroundColor: items.isEmpty ? Color(0xFFE8D3E8) : Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -61,22 +61,16 @@ class _CartScreenState extends State<CartScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    'Cart is Empty :(',
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  Lottie.asset('assets/lottie.json', height: 250, width: 250),
+                  Image.asset('assets/empty-cart.png', height: 300, width: 300),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Hungry? Add some delicious food!',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: const Text(
+                      'Your cart is empty. Go ahead and add some delicious food!',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black87,
+                      ),
                     ),
                   ),
                   SizedBox(
