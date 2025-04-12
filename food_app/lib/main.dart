@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/providers/cart_provider.dart';
-import 'package:food_app/screens/main_screen.dart';
+import 'package:food_app/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4e29ac)),
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      home: SplashScreen(),
     );
   }
 }

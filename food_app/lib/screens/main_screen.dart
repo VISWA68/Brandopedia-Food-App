@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/screens/cart_screen.dart';
 import 'package:food_app/screens/home_screen.dart';
-import 'package:food_app/screens/splash_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,7 +13,6 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    //SplashScreen(),
     HomeScreen(),
     const CartScreen(),
   ];
