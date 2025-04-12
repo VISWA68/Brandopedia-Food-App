@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
 
 class CartProvider with ChangeNotifier {
-  final Map<int, int> _cart = {}; // id -> qty
+  final Map<int, int> _cart = {}; 
   final Map<int, FoodItem> _items = {};
 
   void addToCart(FoodItem item) {
