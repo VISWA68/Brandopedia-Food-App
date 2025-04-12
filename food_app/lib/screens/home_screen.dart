@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         id: 3,
         name: 'French Fries',
         price: 80,
-        image: 'assets/images/veg_meals.jpg',
+        image: 'assets/images/french_fries.jpg',
         isVeg: true,
         foodType: 'snacks'),
     FoodItem(
@@ -44,6 +44,41 @@ class _HomeScreenState extends State<HomeScreen> {
         image: 'assets/images/apple.jpg',
         isVeg: true,
         foodType: 'beverages'),
+    FoodItem(
+        id: 4,
+        name: 'Non Veg Meals',
+        price: 50,
+        image: 'assets/images/non_veg_meals.jpg',
+        isVeg: false,
+        foodType: 'food'),
+    FoodItem(
+        id: 4,
+        name: 'Shawarma',
+        price: 50,
+        image: 'assets/images/shawarma.jpg',
+        isVeg: false,
+        foodType: 'food'),
+    FoodItem(
+        id: 4,
+        name: 'Sandwich',
+        price: 50,
+        image: 'assets/images/sandwich.jpg',
+        isVeg: true,
+        foodType: 'snacks'),
+    FoodItem(
+        id: 4,
+        name: 'Bread Omlet',
+        price: 50,
+        image: 'assets/images/bread_omlet.jpg',
+        isVeg: false,
+        foodType: 'snacks'),
+    FoodItem(
+        id: 4,
+        name: 'Burger',
+        price: 50,
+        image: 'assets/images/burger.jpg',
+        isVeg: false,
+        foodType: 'food'),
   ];
 
   @override
@@ -200,7 +235,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: const [
                 CategoryIcon(icon: Icons.fastfood, label: "Food"),
-                CategoryIcon(icon: Icons.local_drink, label: "Beverages"),
+                CategoryIcon(icon: Icons.local_drink, label: "Juice"),
                 CategoryIcon(icon: Icons.local_offer, label: "Offers"),
                 CategoryIcon(icon: Icons.favorite, label: "Favourites"),
               ],
