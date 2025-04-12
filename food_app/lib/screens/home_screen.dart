@@ -4,48 +4,55 @@ import 'package:food_app/widgets/build_food_tile.dart';
 import 'package:food_app/widgets/category_icon.dart';
 import 'package:food_app/widgets/build_banner.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool showVegOnly = false;
+  bool showNonVegOnly = false;
+
+  final List<FoodItem> foodItems = [
+    FoodItem(
+        id: 1,
+        name: 'Margherita Pizza',
+        price: 150,
+        image: 'assets/images/pizza.jpg',
+        isVeg: true,
+        foodType: 'food'),
+    FoodItem(
+        id: 2,
+        name: 'Veg Meals',
+        price: 180,
+        image: 'assets/images/veg_meals.jpg',
+        isVeg: true,
+        foodType: 'food'),
+    FoodItem(
+        id: 3,
+        name: 'French Fries',
+        price: 80,
+        image: 'assets/images/veg_meals.jpg',
+        isVeg: true,
+        foodType: 'snacks'),
+    FoodItem(
+        id: 4,
+        name: 'Apple Milkshake',
+        price: 50,
+        image: 'assets/images/apple.jpg',
+        isVeg: true,
+        foodType: 'beverages'),
+  ];
+
+  @override
   Widget build(BuildContext context) {
-    final List<FoodItem> foodItems = [
-      FoodItem(
-          id: 1,
-          name: 'Margherita Pizza',
-          price: 150,
-          image: 'https://i.imgur.com/Z9qG1Da.png'),
-      FoodItem(
-          id: 2,
-          name: 'Quick Bites',
-          price: 80,
-          image: 'https://i.imgur.com/3jLPB46.png'),
-      FoodItem(
-          id: 3,
-          name: 'Gulab Jamun',
-          price: 80,
-          image: 'https://i.imgur.com/LrGp2Av.png'),
-      FoodItem(
-          id: 1,
-          name: 'Margherita Pizza',
-          price: 150,
-          image: 'https://i.imgur.com/Z9qG1Da.png'),
-      FoodItem(
-          id: 1,
-          name: 'Margherita Pizza',
-          price: 150,
-          image: 'https://i.imgur.com/Z9qG1Da.png'),
-      FoodItem(
-          id: 1,
-          name: 'Margherita Pizza',
-          price: 150,
-          image: 'https://i.imgur.com/Z9qG1Da.png'),
-      FoodItem(
-          id: 1,
-          name: 'Margherita Pizza',
-          price: 150,
-          image: 'https://i.imgur.com/Z9qG1Da.png'),
-    ];
+    List<FoodItem> filteredItems = foodItems.where((item) {
+      if (showVegOnly) return item.isVeg;
+      if (showNonVegOnly) return !item.isVeg;
+      return true;
+    }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -80,19 +87,55 @@ class HomeScreen extends StatelessWidget {
               pinned: true,
               delegate: _StickyHeaderDelegate(),
             ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FilterChip(
+                      label: const Text("Veg"),
+                      selected: showVegOnly,
+                      onSelected: (val) {
+                        setState(() {
+                          showVegOnly = val;
+                          showNonVegOnly = false;
+                        });
+                      },
+                      selectedColor: Colors.green.withOpacity(0.2),
+                    ),
+                    const SizedBox(width: 10),
+                    FilterChip(
+                      label: const Text("Non-Veg"),
+                      selected: showNonVegOnly,
+                      onSelected: (val) {
+                        setState(() {
+                          showNonVegOnly = val;
+                          showVegOnly = false;
+                        });
+                      },
+                      selectedColor: Colors.red.withOpacity(0.2),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   SizedBox(
                     height: 120,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       children: [
-                        buildBanner('30% OFF\nUP TO 10.175', Colors.orange),
-                        buildBanner('30% OFF\nTRY IT NOW', Colors.blue),
-                        buildBanner('50% OFF\nUSE 302406', Colors.deepPurple),
+                        buildBanner('30% OFF\nUSE BP55', Colors.orange,
+                            'assets/images/burger.jpg'),
+                        buildBanner('10% OFF\nTRY IT NOW', Colors.blue,
+                            'assets/images/pizza.jpg'),
+                        buildBanner('50% OFF\nUSE 302406', Colors.deepPurple,
+                            'assets/images/apple.jpg'),
                       ],
                     ),
                   ),
@@ -100,7 +143,6 @@ class HomeScreen extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('Explore Menu',
                             style: TextStyle(
@@ -108,7 +150,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ...foodItems
+                  ...filteredItems
                       .map((item) => buildFoodTile(context, item))
                       .toList(),
                   const SizedBox(height: 20),
