@@ -5,7 +5,7 @@ class FoodItem {
   final String image;
   final String foodType; // 'snacks', 'beverages', 'food'
   final bool isVeg; // true for veg, false for non-veg
-  final bool isFavorite;
+  bool isFavourite;
 
   FoodItem({
     required this.id,
@@ -14,6 +14,6 @@ class FoodItem {
     required this.image,
     required this.foodType,
     required this.isVeg,
-    this.isFavorite = false,
+    this.isFavourite = false,
   });
 }

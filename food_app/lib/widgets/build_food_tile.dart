@@ -4,6 +4,9 @@ import 'package:food_app/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 Widget buildFoodTile(BuildContext context, FoodItem item) {
+  final cartProvider = Provider.of<CartProvider>(context);
+  final qty = cartProvider.getQuantity(item.id);
+
   return Card(
     margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -29,7 +32,20 @@ Widget buildFoodTile(BuildContext context, FoodItem item) {
                     Icon(item.isVeg ? Icons.circle : Icons.change_history,
                         size: 16,
                         color: item.isVeg ? Colors.green : Colors.red),
-                    Icon(Icons.favorite_border, size: 24),
+                    GestureDetector(
+                      onTap: () {
+                        item.isFavourite = !item.isFavourite;
+                        (context as Element).markNeedsBuild();
+                      },
+                      child: Icon(
+                        item.isFavourite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: item.isFavourite
+                            ? const Color(0xFF4e29ac)
+                            : Colors.grey,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -37,38 +53,64 @@ Widget buildFoodTile(BuildContext context, FoodItem item) {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 16)),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      "₹${item.price}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 14),
-                    ),
-                  ],
+                Text(
+                  "₹${item.price}",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 14),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 6),
-          // Add button
           Column(
             children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF4e29ac),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                ),
-                onPressed: () {
-                  Provider.of<CartProvider>(context, listen: false)
-                      .addToCart(item);
-                },
-                child: const Text("ADD", style: TextStyle(color: Colors.white)),
-              ),
+              const SizedBox(height: 16),
+              qty == 0
+                  ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4e29ac),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                      ),
+                      onPressed: () {
+                        cartProvider.addToCart(item);
+                      },
+                      child: const Text("ADD",
+                          style: TextStyle(color: Colors.white)),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4e29ac),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove, color: Colors.white),
+                            onPressed: () {
+                              cartProvider.decreaseQty(item.id);
+                            },
+                            iconSize: 18,
+                          ),
+                          Text('$qty',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                          IconButton(
+                            icon: const Icon(Icons.add, color: Colors.white),
+                            onPressed: () {
+                              cartProvider.increaseQty(item.id);
+                            },
+                            iconSize: 18,
+                          ),
+                        ],
+                      ),
+                    ),
             ],
           ),
         ],

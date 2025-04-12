@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
 
 class CartProvider with ChangeNotifier {
-  final Map<int, int> _cart = {}; 
+  final Map<int, int> _cart = {};
   final Map<int, FoodItem> _items = {};
+
+  int getQuantity(int id) {
+    return _cart[id] ?? 0;
+  }
 
   void addToCart(FoodItem item) {
     if (_cart.containsKey(item.id)) {
@@ -38,5 +42,6 @@ class CartProvider with ChangeNotifier {
         };
       }).toList();
 
-  int get totalPrice => _cart.entries.fold(0, (sum, e) => sum + (_items[e.key]!.price * e.value));
+  int get totalPrice =>
+      _cart.entries.fold(0, (sum, e) => sum + (_items[e.key]!.price * e.value));
 }
