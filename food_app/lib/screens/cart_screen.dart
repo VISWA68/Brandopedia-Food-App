@@ -51,17 +51,20 @@ class _CartScreenState extends State<CartScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MainScreen(),
-                ),
-              );
-            }),
-        title: const Text('Cart',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainScreen(),
+              ),
+            );
+          },
+        ),
+        title: const Text(
+          'Cart',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
       ),
       body: items.isEmpty
           ? Center(
@@ -70,19 +73,18 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   Image.asset('assets/empty-cart.png', height: 300, width: 300),
                   const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: const Text(
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32),
+                    child: Text(
                       'Your cart is empty. Go ahead and add some delicious food!',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.black87,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(
-                    height: 26,
-                  ),
+                  const SizedBox(height: 26),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF4e29ac),
@@ -96,7 +98,7 @@ class _CartScreenState extends State<CartScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MainScreen(),
+                          builder: (context) => const MainScreen(),
                         ),
                       );
                     },
@@ -120,12 +122,15 @@ class _CartScreenState extends State<CartScreen> {
                       borderRadius: BorderRadius.circular(12)),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(10),
-                    leading: Hero(
-                      tag: 'food_${food.id}',
-                      child: Image.network(food.image, width: 60),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(food.image,
+                          width: 60, height: 60, fit: BoxFit.cover),
                     ),
-                    title: Text(food.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      food.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle:
                         Text('₹${food.price} x $qty = ₹${food.price * qty}'),
                     trailing: Row(
@@ -154,15 +159,24 @@ class _CartScreenState extends State<CartScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Total: ₹${cart.totalPrice}',
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Total: ₹${cart.totalPrice}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4e29ac)),
-                    onPressed: () {},
-                    child: const Text('Order Now',
-                        style: TextStyle(color: Colors.white)),
+                      backgroundColor: const Color(0xFF4e29ac),
+                    ),
+                    onPressed: () {
+                      // Add order logic here
+                    },
+                    child: const Text(
+                      'Order Now',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
