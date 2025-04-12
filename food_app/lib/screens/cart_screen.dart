@@ -1,18 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
 import 'package:food_app/providers/cart_provider.dart';
-import 'package:food_app/screens/home_screen.dart';
 import 'package:food_app/screens/main_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  bool _showLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          _showLoading = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     final items = cart.items;
+
+    if (_showLoading) {
+      return Scaffold(
+        body: Center(
+          child: Lottie.asset(
+            'assets/cart.json',
+            height: 500,
+            width: 500,
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: items.isEmpty ? Color(0xFFE8D3E8) : Colors.white,

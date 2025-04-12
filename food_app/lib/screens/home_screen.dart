@@ -53,7 +53,8 @@ class HomeScreen extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Padding(
+              child: Container(
+                color: const Color.fromARGB(255, 231, 214, 251),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 child: Row(
@@ -62,9 +63,10 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'Chennai',
                       style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     CircleAvatar(
                       backgroundColor: Color(0xFF4e29ac),
@@ -74,12 +76,10 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             SliverPersistentHeader(
               pinned: true,
               delegate: _StickyHeaderDelegate(),
             ),
-
             SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -99,9 +99,14 @@ class HomeScreen extends StatelessWidget {
                   const Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-                    child: Text('Explore',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Explore Menu',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
                   ),
                   ...foodItems
                       .map((item) => buildFoodTile(context, item))
@@ -122,20 +127,26 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return SizedBox(
-      height: maxExtent, 
+      height: maxExtent,
       child: Container(
-        color: Colors.white,
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 231, 214, 251),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(24),
+            bottomRight: Radius.circular(24),
+          ),
+        ),
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max, 
+          mainAxisSize: MainAxisSize.max,
           children: [
             const TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Search for restaurants or dishes',
                 filled: true,
-                fillColor: Color(0xFFF2F2F2),
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                   borderSide: BorderSide.none,
