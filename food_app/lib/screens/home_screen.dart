@@ -117,8 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
     Future.delayed(Duration.zero, () {
-    Provider.of<FavouritesProvider>(context, listen: false).loadFavourites();
-  });
+      Provider.of<FavouritesProvider>(context, listen: false).loadFavourites();
+    });
   }
 
   @override
@@ -147,24 +147,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<FoodItem> get filteredItems {
-  final favProvider = Provider.of<FavouritesProvider>(context, listen: false);
+    final favProvider = Provider.of<FavouritesProvider>(context, listen: false);
 
-  return foodItems.where((item) {
-    final matchesSearch = item.name.toLowerCase().contains(searchQuery.toLowerCase());
-    if (!matchesSearch) return false;
+    return foodItems.where((item) {
+      final matchesSearch =
+          item.name.toLowerCase().contains(searchQuery.toLowerCase());
+      if (!matchesSearch) return false;
 
-    if (selectedCategory == 'favourites' && !favProvider.isFavourite(item.id)) return false;
-    if (selectedCategory == 'food' &&
-        item.foodType != 'food' && item.foodType != 'snacks') return false;
-    if (selectedCategory == 'beverages' && item.foodType != 'beverages') return false;
-    if (selectedCategory == 'offers') return true;
-    if (showVegOnly && !item.isVeg) return false;
-    if (showNonVegOnly && item.isVeg) return false;
+      if (selectedCategory == 'favourites' && !favProvider.isFavourite(item.id))
+        return false;
+      if (selectedCategory == 'food' &&
+          item.foodType != 'food' &&
+          item.foodType != 'snacks') return false;
+      if (selectedCategory == 'beverages' && item.foodType != 'beverages')
+        return false;
+      if (selectedCategory == 'offers') return true;
+      if (showVegOnly && !item.isVeg) return false;
+      if (showNonVegOnly && item.isVeg) return false;
 
-    return true;
-  }).toList();
-}
-
+      return true;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,13 +212,16 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverPersistentHeader(
               pinned: true,
               delegate: _StickyHeaderDelegate(
-                controller: _searchController,
-                onCategorySelected: (category) {
-                  setState(() {
-                    selectedCategory = category;
-                  });
-                },
-              ),
+                  controller: _searchController,
+                  onCategorySelected: (category) {
+                    setState(() {
+                      selectedCategory = category;
+                      if (category == 'beverages' || category == 'offers') {
+                        showVegOnly = false;
+                        showNonVegOnly = false;
+                      }
+                    });
+                  }),
             ),
             SliverToBoxAdapter(
               child: selectedCategory == 'All'
@@ -297,7 +303,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     fontSize: 20, fontWeight: FontWeight.bold)),
                             const SizedBox(height: 6),
                             if (selectedCategory == "All" ||
-                                selectedCategory == "food")
+                                selectedCategory == "food" ||
+                                (selectedCategory == "favourites" &&
+                                    filteredItems.isNotEmpty))
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10),
