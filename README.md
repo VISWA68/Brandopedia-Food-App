@@ -1,4 +1,4 @@
-# Mini Food App
+# Brandopedia Food App
 
 A beautiful and user-friendly Flutter app to explore, filter, and favorite your favorite foods, snacks, and beverages. Includes features like category-based browsing, veg/non-veg filtering, animated banners, and persistent favorites using Provider.
 
