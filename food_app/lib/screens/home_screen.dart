@@ -5,6 +5,7 @@ import 'package:food_app/models/food_item.dart';
 import 'package:food_app/widgets/build_food_tile.dart';
 import 'package:food_app/widgets/category_icon.dart';
 import 'package:food_app/widgets/build_banner.dart';
+import 'package:food_app/widgets/empty_favourites.dart';
 import 'package:food_app/widgets/offer_card.dart';
 import 'package:food_app/widgets/veg_non_veg.dart';
 
@@ -304,9 +305,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      ...filteredItems
-                          .map((item) => buildFoodTile(context, item))
-                          .toList(),
+                      ...(selectedCategory == 'favourites' &&
+                              filteredItems.isEmpty
+                          ? [buildEmptyFavourites(selectedCategory, context)]
+                          : filteredItems
+                              .map((item) => buildFoodTile(context, item))
+                              .toList()),
                       const SizedBox(height: 20),
                     ]),
                   )
