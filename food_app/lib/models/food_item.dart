@@ -3,8 +3,8 @@ class FoodItem {
   final String name;
   final int price;
   final String image;
-  final String foodType; // 'snacks', 'beverages', 'food'
-  final bool isVeg; // true for veg, false for non-veg
+  final String foodType;
+  final bool isVeg; 
   bool isFavourite;
 
   FoodItem({
