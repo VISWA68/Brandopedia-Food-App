@@ -22,7 +22,7 @@ A beautiful and user-friendly Flutter app to explore, filter, and favorite your 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/food_app.git](https://github.com/VISWA68/Brandopedia-Food-App.git
+git clone https://github.com/VISWA68/Brandopedia-Food-App.git
 cd food_app
 ```
 ### 2. Install Dependencies
