@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
 import 'package:food_app/widgets/build_food_tile.dart';
 import 'package:food_app/widgets/category_icon.dart';
 import 'package:food_app/widgets/build_banner.dart';
+import 'package:food_app/widgets/offer_card.dart';
+import 'package:food_app/widgets/veg_non_veg.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,35 +31,35 @@ class _HomeScreenState extends State<HomeScreen> {
     FoodItem(
         id: 2,
         name: 'Veg Meals',
-        price: 180,
+        price: 100,
         image: 'assets/images/veg_meals.jpg',
         isVeg: true,
         foodType: 'food'),
     FoodItem(
         id: 3,
         name: 'French Fries',
-        price: 80,
+        price: 50,
         image: 'assets/images/french_fries.jpg',
         isVeg: true,
         foodType: 'snacks'),
     FoodItem(
         id: 4,
         name: 'Apple Milkshake',
-        price: 50,
+        price: 40,
         image: 'assets/images/apple.jpg',
         isVeg: true,
         foodType: 'beverages'),
     FoodItem(
         id: 5,
         name: 'Non Veg Meals',
-        price: 50,
+        price: 120,
         image: 'assets/images/non_veg_meals.jpg',
         isVeg: false,
         foodType: 'food'),
     FoodItem(
         id: 6,
         name: 'Shawarma',
-        price: 50,
+        price: 90,
         image: 'assets/images/shawarma.jpg',
         isVeg: false,
         foodType: 'food'),
@@ -76,22 +80,72 @@ class _HomeScreenState extends State<HomeScreen> {
     FoodItem(
         id: 9,
         name: 'Burger',
-        price: 50,
+        price: 80,
         image: 'assets/images/burger.jpg',
         isVeg: false,
         foodType: 'food'),
+    FoodItem(
+        id: 10,
+        name: 'Butter Fruit Shake',
+        price: 60,
+        image: 'assets/images/butter_fruit.jpg',
+        isVeg: true,
+        foodType: 'beverages'),
+    FoodItem(
+        id: 11,
+        name: 'Banana Shake',
+        price: 40,
+        image: 'assets/images/banana.jpg',
+        isVeg: true,
+        foodType: 'beverages'),
   ];
+  final ScrollController _bannerScrollController = ScrollController();
+  Timer? _autoScrollTimer;
+  @override
+  void initState() {
+    super.initState();
+    _startAutoScroll();
+  }
+
+  @override
+  void dispose() {
+    _autoScrollTimer?.cancel();
+    _bannerScrollController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoScroll() {
+    const duration = Duration(seconds: 3);
+    _autoScrollTimer = Timer.periodic(duration, (_) {
+      if (_bannerScrollController.hasClients) {
+        final maxScroll = _bannerScrollController.position.maxScrollExtent;
+        final current = _bannerScrollController.offset;
+        final next = (current + 300 >= maxScroll) ? 0.0 : current + 300;
+
+        _bannerScrollController.animateTo(
+          next,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     List<FoodItem> filteredItems = foodItems.where((item) {
-      if (showVegOnly) return item.isVeg;
-      if (showNonVegOnly) return !item.isVeg;
-      if (selectedCategory == 'favourites') return item.isFavourite;
-      if (selectedCategory == 'offers') return true;
-      if (selectedCategory == 'food' || selectedCategory == 'beverages') {
-        return item.foodType == selectedCategory;
+      if (selectedCategory == 'favourites' && !item.isFavourite) return false;
+      if (selectedCategory == 'food' &&
+          item.foodType != 'food' &&
+          item.foodType != 'snacks') {
+        return false;
       }
+      if (selectedCategory == 'beverages' && item.foodType != 'beverages') {
+        return false;
+      }
+      if (selectedCategory == 'offers') return true;
+      if (showVegOnly && !item.isVeg) return false;
+      if (showNonVegOnly && item.isVeg) return false;
       return true;
     }).toList();
 
@@ -144,55 +198,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            selectedCategory == "food"
-                ? SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          FilterChip(
-                            label: Row(
-                              children: [
-                                Image.asset('assets/images/broccoli.png',
-                                    height: 18, width: 18),
-                                const SizedBox(width: 6),
-                                const Text("Veg"),
-                              ],
-                            ),
-                            selected: showVegOnly,
-                            onSelected: (val) {
-                              setState(() {
-                                showVegOnly = val;
-                                showNonVegOnly = false;
-                              });
-                            },
-                            selectedColor: Colors.green.withOpacity(0.2),
-                          ),
-                          const SizedBox(width: 10),
-                          FilterChip(
-                            label: Row(
-                              children: [
-                                Image.asset('assets/images/chicken-leg.png',
-                                    height: 20, width: 20),
-                                const SizedBox(width: 6),
-                                const Text("Non-Veg"),
-                              ],
-                            ),
-                            selected: showNonVegOnly,
-                            onSelected: (val) {
-                              setState(() {
-                                showNonVegOnly = val;
-                                showVegOnly = false;
-                              });
-                            },
-                            selectedColor: Colors.red.withOpacity(0.2),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : const SliverToBoxAdapter(child: SizedBox()),
             SliverToBoxAdapter(
               child: selectedCategory == 'All'
                   ? Padding(
@@ -201,6 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 120,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
+                          controller: _bannerScrollController,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           children: [
                             buildBanner('30% OFF\nUSE BP55', Colors.orange,
@@ -213,27 +219,98 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     )
-                  : const SizedBox.shrink(),
+                  : selectedCategory == 'offers'
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Column(
+                            children: [
+                              OfferCard(
+                                title: "30% OFF",
+                                subtitle: "Use Code BP55 on all burgers",
+                                imagePath: 'assets/images/burger.jpg',
+                                gradientColors: [
+                                  Colors.orange,
+                                  Colors.deepOrange
+                                ],
+                                onTap: () =>
+                                    setState(() => selectedCategory = 'All'),
+                              ),
+                              const SizedBox(height: 16),
+                              OfferCard(
+                                title: "10% OFF",
+                                subtitle: "Pizza Deals just for you",
+                                imagePath: 'assets/images/pizza.jpg',
+                                gradientColors: [
+                                  Colors.blueAccent,
+                                  Colors.indigo
+                                ],
+                                onTap: () =>
+                                    setState(() => selectedCategory = 'All'),
+                              ),
+                              const SizedBox(height: 16),
+                              OfferCard(
+                                title: "50% OFF",
+                                subtitle: "Milkshakes Half Price Today",
+                                imagePath: 'assets/images/apple.jpg',
+                                gradientColors: [
+                                  Colors.purple,
+                                  Colors.deepPurpleAccent
+                                ],
+                                onTap: () =>
+                                    setState(() => selectedCategory = 'All'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox.shrink(),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(_title,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ),
-                ...filteredItems
-                    .map((item) => buildFoodTile(context, item))
-                    .toList(),
-                const SizedBox(height: 20),
-              ]),
-            )
+            selectedCategory != "offers"
+                ? SliverList(
+                    delegate: SliverChildListDelegate([
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 10),
+                        child: Column(
+                          children: [
+                            Text(_title,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            selectedCategory == "All" ||
+                                    selectedCategory == "food"
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: VegNonVegToggle(
+                                      showVegOnly: showVegOnly,
+                                      showNonVegOnly: showNonVegOnly,
+                                      onToggle: (isVeg) {
+                                        setState(() {
+                                          if (isVeg) {
+                                            showVegOnly = true;
+                                            showNonVegOnly = false;
+                                          } else {
+                                            showNonVegOnly = true;
+                                            showVegOnly = false;
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
+                      ),
+                      ...filteredItems
+                          .map((item) => buildFoodTile(context, item))
+                          .toList(),
+                      const SizedBox(height: 20),
+                    ]),
+                  )
+                : SliverToBoxAdapter(child: SizedBox()),
           ],
         ),
       ),
@@ -278,6 +355,10 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                CategoryIcon(
+                    icon: Icons.apps,
+                    label: "All",
+                    onTap: () => onCategorySelected("All")),
                 CategoryIcon(
                     icon: Icons.fastfood,
                     label: "Food",
