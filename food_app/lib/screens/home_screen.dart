@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
+import 'package:food_app/providers/favourites_provider.dart';
 import 'package:food_app/widgets/build_food_tile.dart';
 import 'package:food_app/widgets/category_icon.dart';
 import 'package:food_app/widgets/build_banner.dart';
 import 'package:food_app/widgets/empty_favourites.dart';
 import 'package:food_app/widgets/offer_card.dart';
 import 'package:food_app/widgets/veg_non_veg.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -114,6 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
         searchQuery = _searchController.text;
       });
     });
+    Future.delayed(Duration.zero, () {
+    Provider.of<FavouritesProvider>(context, listen: false).loadFavourites();
+  });
   }
 
   @override
@@ -142,24 +147,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<FoodItem> get filteredItems {
-    return foodItems.where((item) {
-      final matchesSearch =
-          item.name.toLowerCase().contains(searchQuery.toLowerCase());
-      if (!matchesSearch) return false;
+  final favProvider = Provider.of<FavouritesProvider>(context, listen: false);
 
-      if (selectedCategory == 'favourites' && !item.isFavourite) return false;
-      if (selectedCategory == 'food' &&
-          item.foodType != 'food' &&
-          item.foodType != 'snacks') return false;
-      if (selectedCategory == 'beverages' && item.foodType != 'beverages')
-        return false;
-      if (selectedCategory == 'offers') return true;
-      if (showVegOnly && !item.isVeg) return false;
-      if (showNonVegOnly && item.isVeg) return false;
+  return foodItems.where((item) {
+    final matchesSearch = item.name.toLowerCase().contains(searchQuery.toLowerCase());
+    if (!matchesSearch) return false;
 
-      return true;
-    }).toList();
-  }
+    if (selectedCategory == 'favourites' && !favProvider.isFavourite(item.id)) return false;
+    if (selectedCategory == 'food' &&
+        item.foodType != 'food' && item.foodType != 'snacks') return false;
+    if (selectedCategory == 'beverages' && item.foodType != 'beverages') return false;
+    if (selectedCategory == 'offers') return true;
+    if (showVegOnly && !item.isVeg) return false;
+    if (showNonVegOnly && item.isVeg) return false;
+
+    return true;
+  }).toList();
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +217,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            // Banners or Offers
             SliverToBoxAdapter(
               child: selectedCategory == 'All'
                   ? Padding(
@@ -280,7 +284,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       : const SizedBox.shrink(),
             ),
-            // Main content
             selectedCategory != "offers"
                 ? SliverList(
                     delegate: SliverChildListDelegate([
