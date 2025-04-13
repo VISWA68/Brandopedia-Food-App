@@ -18,6 +18,11 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
+
+    Future.microtask(() {
+      Provider.of<CartProvider>(context, listen: false).loadCartFromDB();
+    });
+
     Future.delayed(const Duration(seconds: 1), () {
       if (mounted) {
         setState(() {

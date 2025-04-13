@@ -17,7 +17,7 @@ class DBHelper {
   }
 
   Future<Database> _initDB() async {
-    final path = join(await getDatabasesPath(), 'cart.db');
+    final path = join(await getDatabasesPath(), 'app_data.db');
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
@@ -31,9 +31,20 @@ class DBHelper {
         quantity INTEGER
       )
     ''');
+
+    db.execute('''
+      CREATE TABLE favourites (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        price INTEGER,
+        image TEXT,
+        isVeg INTEGER,
+        foodType TEXT
+      )
+    ''');
   }
 
-  Future<void> insertOrUpdateItem(FoodItem item, int quantity) async {
+  Future<void> insertOrUpdateCart(FoodItem item, int quantity) async {
     final db = await database;
     await db.insert('cart', {
       'id': item.id,
@@ -42,6 +53,11 @@ class DBHelper {
       'image': item.image,
       'quantity': quantity
     }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> deleteCartItem(int id) async {
+    final db = await database;
+    await db.delete('cart', where: 'id = ?', whereArgs: [id]);
   }
 
   Future<List<Map<String, dynamic>>> getCart() async {
@@ -53,4 +69,41 @@ class DBHelper {
     final db = await database;
     await db.delete('cart');
   }
+
+   Future<void> addToFavourites(FoodItem item) async {
+    final db = await database;
+    await db.insert('favourites', {
+      'id': item.id,
+      'name': item.name,
+      'price': item.price,
+      'image': item.image,
+      'isVeg': item.isVeg ? 1 : 0,
+      'foodType': item.foodType
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> removeFromFavourites(int id) async {
+    final db = await database;
+    await db.delete('favourites', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<List<FoodItem>> getFavourites() async {
+    final db = await database;
+    final result = await db.query('favourites');
+    return result.map((json) => FoodItem(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      price: json['price'] as int,
+      image: json['image'] as String,
+      isVeg: (json['isVeg'] as int) == 1,
+      foodType: json['foodType'] as String,
+    )).toList();
+  }
+
+  Future<bool> isFavourite(int id) async {
+    final db = await database;
+    final result = await db.query('favourites', where: 'id = ?', whereArgs: [id]);
+    return result.isNotEmpty;
+  }
 }
+

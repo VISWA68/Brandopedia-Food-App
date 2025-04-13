@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
 import 'package:food_app/providers/cart_provider.dart';
+import 'package:food_app/providers/favourites_provider.dart';
 import 'package:provider/provider.dart';
 
 Widget buildFoodTile(BuildContext context, FoodItem item) {
@@ -50,20 +51,20 @@ Widget buildFoodTile(BuildContext context, FoodItem item) {
                         color: item.isVeg ? Colors.green : Colors.red,
                       ),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          item.isFavourite = !item.isFavourite;
-                          (context as Element).markNeedsBuild();
-                        },
-                        child: Icon(
-                          item.isFavourite
+                      IconButton(
+                        icon: Icon(
+                          Provider.of<FavouritesProvider>(context)
+                                  .isFavourite(item.id)
                               ? Icons.favorite
                               : Icons.favorite_border,
-                          color: item.isFavourite
-                              ? const Color(0xFF4e29ac)
-                              : Colors.grey,
+                          color: Color(0xFF4e29ac),
                         ),
-                      ),
+                        onPressed: () {
+                          Provider.of<FavouritesProvider>(context,
+                                  listen: false)
+                              .toggleFavourite(item);
+                        },
+                      )
                     ],
                   ),
                   const SizedBox(height: 10),
