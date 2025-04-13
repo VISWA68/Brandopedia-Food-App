@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
 import 'package:food_app/widgets/build_food_tile.dart';
@@ -20,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool showVegOnly = false;
   bool showNonVegOnly = false;
   String selectedCategory = 'All';
+  String searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
 
   final List<FoodItem> foodItems = [
     FoodItem(
@@ -100,18 +101,26 @@ class _HomeScreenState extends State<HomeScreen> {
         isVeg: true,
         foodType: 'beverages'),
   ];
+
   final ScrollController _bannerScrollController = ScrollController();
   Timer? _autoScrollTimer;
+
   @override
   void initState() {
     super.initState();
     _startAutoScroll();
+    _searchController.addListener(() {
+      setState(() {
+        searchQuery = _searchController.text;
+      });
+    });
   }
 
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
     _bannerScrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -125,31 +134,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
         _bannerScrollController.animateTo(
           next,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
       }
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    List<FoodItem> filteredItems = foodItems.where((item) {
+  List<FoodItem> get filteredItems {
+    return foodItems.where((item) {
+      final matchesSearch =
+          item.name.toLowerCase().contains(searchQuery.toLowerCase());
+      if (!matchesSearch) return false;
+
       if (selectedCategory == 'favourites' && !item.isFavourite) return false;
       if (selectedCategory == 'food' &&
           item.foodType != 'food' &&
-          item.foodType != 'snacks') {
+          item.foodType != 'snacks') return false;
+      if (selectedCategory == 'beverages' && item.foodType != 'beverages')
         return false;
-      }
-      if (selectedCategory == 'beverages' && item.foodType != 'beverages') {
-        return false;
-      }
       if (selectedCategory == 'offers') return true;
       if (showVegOnly && !item.isVeg) return false;
       if (showNonVegOnly && item.isVeg) return false;
+
       return true;
     }).toList();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     var _title = "";
     if (selectedCategory == "food") {
       _title = "Foods and Snacks";
@@ -160,11 +173,13 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       _title = "Explore Menu";
     }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
+            // Top bar
             SliverToBoxAdapter(
               child: Container(
                 color: const Color.fromARGB(255, 231, 214, 251),
@@ -175,11 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: const [
                     Text(
                       'Chennai',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     CircleAvatar(
                       backgroundColor: Color(0xFF4e29ac),
@@ -192,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverPersistentHeader(
               pinned: true,
               delegate: _StickyHeaderDelegate(
+                controller: _searchController,
                 onCategorySelected: (category) {
                   setState(() {
                     selectedCategory = category;
@@ -199,6 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
+            // Banners or Offers
             SliverToBoxAdapter(
               child: selectedCategory == 'All'
                   ? Padding(
@@ -266,42 +280,43 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       : const SizedBox.shrink(),
             ),
+            // Main content
             selectedCategory != "offers"
                 ? SliverList(
                     delegate: SliverChildListDelegate([
                       Padding(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 10),
                         child: Column(
                           children: [
                             Text(_title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold)),
-                            const SizedBox(
-                              height: 6,
-                            ),
-                            selectedCategory == "All" ||
-                                    selectedCategory == "food"
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: VegNonVegToggle(
-                                      showVegOnly: showVegOnly,
-                                      showNonVegOnly: showNonVegOnly,
-                                      onToggle: (isVeg) {
-                                        setState(() {
-                                          if (isVeg) {
-                                            showVegOnly = true;
-                                            showNonVegOnly = false;
-                                          } else {
-                                            showNonVegOnly = true;
-                                            showVegOnly = false;
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  )
-                                : const SizedBox(),
+                            const SizedBox(height: 6),
+                            if (selectedCategory == "All" ||
+                                selectedCategory == "food")
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: VegNonVegToggle(
+                                  showVegOnly: showVegOnly,
+                                  showNonVegOnly: showNonVegOnly,
+                                  onToggle: (isVeg) {
+                                    setState(() {
+                                      if (isVeg == null) {
+                                        showVegOnly = false;
+                                        showNonVegOnly = false;
+                                      } else if (isVeg) {
+                                        showVegOnly = true;
+                                        showNonVegOnly = false;
+                                      } else {
+                                        showNonVegOnly = true;
+                                        showVegOnly = false;
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -314,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 20),
                     ]),
                   )
-                : SliverToBoxAdapter(child: SizedBox()),
+                : const SliverToBoxAdapter(child: SizedBox()),
           ],
         ),
       ),
@@ -324,8 +339,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Function(String) onCategorySelected;
+  final TextEditingController controller;
 
-  _StickyHeaderDelegate({required this.onCategorySelected});
+  _StickyHeaderDelegate({
+    required this.onCategorySelected,
+    required this.controller,
+  });
 
   @override
   Widget build(
@@ -343,8 +362,9 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
         child: Column(
           children: [
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Search for restaurants or dishes',
                 filled: true,
@@ -389,6 +409,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   double get maxExtent => 160;
+
   @override
   double get minExtent => 160;
 
