@@ -67,6 +67,8 @@ class _MainScreenState extends State<MainScreen> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
             BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: ''),
+            // BottomNavigationBarItem(
+            //     icon: Icon(Icons.account_circle_rounded), label: ''),
           ],
         ),
       ),
