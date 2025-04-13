@@ -1,4 +1,3 @@
-// favourites_provider.dart
 import 'package:flutter/material.dart';
 import 'package:food_app/data/local/db_helper.dart';
 import 'package:food_app/models/food_item.dart';

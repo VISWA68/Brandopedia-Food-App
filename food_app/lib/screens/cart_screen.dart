@@ -176,7 +176,6 @@ class _CartScreenState extends State<CartScreen> {
                       backgroundColor: const Color(0xFF4e29ac),
                     ),
                     onPressed: () {
-                      // Add order logic here
                     },
                     child: const Text(
                       'Order Now',
