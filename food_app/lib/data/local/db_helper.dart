@@ -42,7 +42,37 @@ class DBHelper {
         foodType TEXT
       )
     ''');
+
+    db.execute('''
+    CREATE TABLE user_profile (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      email TEXT,
+      phone TEXT,
+      address TEXT
+    )
+  ''');
   }
+  Future<void> saveUserProfile(String name, String email, String phone, String address) async {
+  final db = await database;
+  await db.insert(
+    'user_profile',
+    {
+      'id': 1,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'address': address,
+    },
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+Future<Map<String, dynamic>?> getUserProfile() async {
+  final db = await database;
+  final result = await db.query('user_profile', where: 'id = ?', whereArgs: [1]);
+  return result.isNotEmpty ? result.first : null;
+}
 
   Future<void> insertOrUpdateCart(FoodItem item, int quantity) async {
     final db = await database;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/providers/cart_provider.dart';
 import 'package:food_app/providers/favourites_provider.dart';
+import 'package:food_app/providers/profile_provider.dart';
 import 'package:food_app/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => FavouritesProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MyApp(),
     ),

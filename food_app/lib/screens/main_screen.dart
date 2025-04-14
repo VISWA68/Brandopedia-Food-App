@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_app/screens/cart_screen.dart';
 import 'package:food_app/screens/home_screen.dart';
+import 'package:food_app/screens/profile_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,6 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     const CartScreen(),
+    ProfileScreen()
   ];
 
   DateTime? _lastBackPressed;
@@ -67,8 +69,8 @@ class _MainScreenState extends State<MainScreen> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
             BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: ''),
-            // BottomNavigationBarItem(
-            //     icon: Icon(Icons.account_circle_rounded), label: ''),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle_rounded), label: ''),
           ],
         ),
       ),
