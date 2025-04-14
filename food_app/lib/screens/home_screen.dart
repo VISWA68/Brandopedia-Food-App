@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:food_app/models/food_item.dart';
 import 'package:food_app/providers/favourites_provider.dart';
+import 'package:food_app/screens/profile_page.dart';
 import 'package:food_app/widgets/build_food_tile.dart';
 import 'package:food_app/widgets/category_icon.dart';
 import 'package:food_app/widgets/build_banner.dart';
@@ -187,7 +188,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // Top bar
             SliverToBoxAdapter(
               child: Container(
                 color: const Color.fromARGB(255, 231, 214, 251),
@@ -195,15 +195,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text(
                       'Chennai',
                       style:
                           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
-                    CircleAvatar(
-                      backgroundColor: Color(0xFF4e29ac),
-                      child: Icon(Icons.person, color: Colors.white),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(),
+                            ));
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: Color(0xFF4e29ac),
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
