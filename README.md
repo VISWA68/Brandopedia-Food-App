@@ -38,4 +38,3 @@ flutter run
 
 ---
 
-Developed for evaluation of the Brandopedia mini project task.
